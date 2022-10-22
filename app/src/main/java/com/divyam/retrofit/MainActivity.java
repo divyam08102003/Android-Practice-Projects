@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rv_list;
     List<Model> data;
     String url = "https://jsonplaceholder.typicode.com/";
+    ProgressBar progressBar;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
         tv1 = findViewById(R.id.header_title);
         rv_list = findViewById(R.id.rv_list);
+        progressBar = findViewById(R.id.progress);
+        progressBar.setVisibility(View.VISIBLE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         MyAdapter myAdapter = new MyAdapter(MainActivity.this);
@@ -49,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Model>> call, Response<List<Model>> response) {
                 data = response.body();
+                progressBar.setVisibility(View.GONE);
                 myAdapter.setData(data);
 
 //                tv1.setText(String.valueOf(data.get(0).getId()));
@@ -59,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Model>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(MainActivity.this, "No Data Available", Toast.LENGTH_SHORT).show();
             }
         });
